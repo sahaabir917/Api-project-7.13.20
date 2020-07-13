@@ -2,6 +2,7 @@ package com.example.apiservice3
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.apiservice3.FootballDataclass.FootballList
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     MobileAds.initialize(this,getString(R.string.app_id))
         val addrequest = AdRequest.Builder().build()
         adView.loadAd(addrequest)
+
 
     }
 }
