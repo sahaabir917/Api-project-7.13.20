@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/typeFragment">
+
+    <fragment
+        android:id="@+id/typeFragment"
+        android:name="com.example.apiservice3.TypeFragment"
+        android:label="fragment_type"
+        tools:layout="@layout/fragment_type" >
+        <action
+            android:id="@+id/action_typeFragment_to_footballDetailsFragment"
+            app:destination="@id/footballDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/footballDetailsFragment"
+        android:name="com.example.apiservice3.FootballDetailsFragment"
+        android:label="fragment_football_details"
+        tools:layout="@layout/fragment_football_details" />
+</navigation>
