@@ -8,10 +8,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.apiservice3.FootballDataclass.FootballData
 import com.example.apiservice3.FootballDataclass.FootballList
 import kotlinx.android.synthetic.main.footballrow.view.*
 
 class FootballAdapter(private val footballList: FootballList) : RecyclerView.Adapter<FootballAdapter.ViewHolder>() {
+    lateinit var footballdata : MutableList<FootballData>
+
+    init {
+      footballdata = footballList.data.toMutableList()
+    }
 
 
 
@@ -29,12 +35,12 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
         return FootballAdapter.ViewHolder(view)
     }
 
-    override fun getItemCount() = footballList.data.size
+    override fun getItemCount() = footballdata.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.id_number.text = footballList.data[position].id.toString()
-        holder.published_at.text = footballList.data[position].publishedAt
-        holder.body.text = footballList.data[position].body
+        holder.id_number.text = footballdata[position].id.toString()
+        holder.published_at.text = footballdata[position].publishedAt
+        holder.body.text = footballdata[position].body
 
 
         holder.itemView.setOnClickListener {view : View ->
@@ -42,17 +48,19 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
 
 //            val mFragment = NewFragment()
             val mArgs = Bundle()
-            Log.d("argument will passed", footballList.data[position].source)
+            Log.d("argument will passed", footballdata[position].source)
 
-            mArgs.putString("Key", footballList.data[position].source.toString())
+            mArgs.putString("Key", footballdata[position].source.toString())
             view.findNavController().navigate(R.id.action_typeFragment_to_footballDetailsFragment,mArgs)
-
-
-
 
         }
 
 
+
+    }
+
+    public fun addFootballData( footballDataList : List<FootballData>){
+        this.footballdata.addAll(footballDataList)
     }
 
 

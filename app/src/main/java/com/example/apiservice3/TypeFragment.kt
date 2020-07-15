@@ -1,17 +1,22 @@
 package com.example.apiservice3
 
 import android.os.Bundle
+import android.os.Handler
 
 import android.util.Log.d
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.apiservice3.ApiserviceInterface.Football
 import com.example.apiservice3.FootballDataclass.FootballList
 
 import kotlinx.android.synthetic.main.fragment_type.*
+import kotlinx.android.synthetic.main.fragment_type.recyclerview
+import kotlinx.android.synthetic.main.fragment_type.view.*
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,6 +28,20 @@ import retrofit2.converter.gson.GsonConverterFactory
  * A simple [Fragment] subclass.
  */
 class TypeFragment : Fragment() {
+
+    lateinit var layoutManager: RecyclerView.LayoutManager
+
+    //   lateinit var adapter : FootballAdapter
+    var isScrolling = false
+    var currentItem: Int = 0
+    var totalItem: Int = 0
+    var scrolloutItems: Int = 0
+    var pageid = 1
+    val pagesize = 10
+    lateinit var adapter: FootballAdapter
+    lateinit var footballList: FootballList
+    var i: Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,9 +56,83 @@ class TypeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var limit = 10
-        var page = 1
-        var isLoading= false
+//
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://128.199.183.164:8081/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(Football::class.java)
+
+
+        api.getdata(pagesize, pageid).enqueue(object : Callback<FootballList> {
+            override fun onFailure(call: Call<FootballList>, t: Throwable) {
+                d("Abir", "Failed to retrive")
+            }
+
+            override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
+                d("Abir", "responsed")
+                showAllData(response.body()!!)
+            }
+
+        })
+
+
+        layoutManager = LinearLayoutManager(activity)
+        recyclerview.layoutManager = layoutManager
+
+        recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentItem = layoutManager.childCount
+                totalItem = layoutManager.itemCount
+                scrolloutItems =
+                    (recyclerview.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                d("scrollout", scrolloutItems.toString())
+                d("scrolling", isScrolling.toString())
+
+                if (isScrolling && ((currentItem + scrolloutItems) == totalItem)) {
+                    isScrolling = false
+                    fetchagain()
+
+                }
+
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
+
+                }
+            }
+
+        })
+
+
+    }
+
+
+    private fun showAllData(footballList: FootballList) {
+
+        adapter = FootballAdapter(footballList)
+        recyclerview.adapter = adapter
+
+    }
+
+
+    private fun fetchagain() {
+
+        Handler().postDelayed(Runnable {
+            kotlin.run {
+                retrofitcalling()
+            }
+        }, 5000)
+    }
+
+
+    private fun retrofitcalling() {
+
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://128.199.183.164:8081/")
@@ -49,29 +142,31 @@ class TypeFragment : Fragment() {
         val api = retrofit.create(Football::class.java)
 
 
-        api.getdata().enqueue(object :Callback<FootballList>{
+        pageid++
+
+        api.getdata(pagesize, pageid).enqueue(object : Callback<FootballList> {
             override fun onFailure(call: Call<FootballList>, t: Throwable) {
                 d("Abir", "Failed to retrive")
             }
 
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
-                d("Abir","responsed")
-                showAllData(response.body()!!)
+                progressbar.visibility = View.GONE
+                i++
+                d("Abir", "responsed" + i.toString())
+
+                adapter.addFootballData(response.body()!!.data)
+                adapter.notifyDataSetChanged()
             }
 
         })
-
     }
-
-
-    private fun showAllData (footballList: FootballList){
-        recyclerview.apply {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = FootballAdapter(footballList)
-//            getpage(footballList)
-        }
-    }
-
 
 
 }
+
+
+
+
+
+
+

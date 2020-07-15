@@ -83,7 +83,7 @@ class FootballFragment : Fragment() {
 
         val api = retrofit.create(Football::class.java)
 
-        api.getdata().enqueue(object : Callback<FootballList>{
+        api.getdata(1,20).enqueue(object : Callback<FootballList>{
             override fun onFailure(call: Call<FootballList>, t: Throwable) {
 
             }
