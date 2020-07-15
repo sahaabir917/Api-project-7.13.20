@@ -2,6 +2,7 @@ package com.example.apiservice3
 
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,10 @@ import kotlinx.android.synthetic.main.footballrow.view.*
 
 class FootballAdapter(private val footballList: FootballList) : RecyclerView.Adapter<FootballAdapter.ViewHolder>() {
     lateinit var footballdata : MutableList<FootballData>
-
+//    public var totaldata : Int
     init {
       footballdata = footballList.data.toMutableList()
+//        totaldata = footballList.page.totalRecords
     }
 
 

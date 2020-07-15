@@ -41,6 +41,8 @@ class TypeFragment : Fragment() {
     lateinit var adapter: FootballAdapter
     lateinit var footballList: FootballList
     var i: Int = 0
+    var totalRecords : Int = 0
+    var totalretrive : Int = 0
 
 
     override fun onCreateView(
@@ -73,6 +75,8 @@ class TypeFragment : Fragment() {
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
                 d("Abir", "responsed")
                 showAllData(response.body()!!)
+                totalRecords = response.body()!!.page.totalRecords
+
             }
 
         })
@@ -88,12 +92,12 @@ class TypeFragment : Fragment() {
                 totalItem = layoutManager.itemCount
                 scrolloutItems =
                     (recyclerview.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                d("scrollout", scrolloutItems.toString())
-                d("scrolling", isScrolling.toString())
+
 
                 if (isScrolling && ((currentItem + scrolloutItems) == totalItem)) {
                     isScrolling = false
-                    fetchagain()
+                    d("total record is in section 1 ", totalRecords.toString())
+                    fetchagain(totalRecords)
 
                 }
 
@@ -121,18 +125,43 @@ class TypeFragment : Fragment() {
     }
 
 
-    private fun fetchagain() {
+    private fun fetchagain(totalrecords : Int ) {
 
-        Handler().postDelayed(Runnable {
-            kotlin.run {
-                retrofitcalling()
-            }
-        }, 5000)
+        //        totalretrive = (pagesize*pageid)
+//        d("totalretrive",totalretrive.toString())
+//
+//        if(totalrecords2!=totalretrive){
+//            d("load more or not","load more")
+//        }
+//        if(totalrecords2 == totalretrive){
+//            d("load more or not","dont load $totalretrive" )
+//        }
+
+        totalretrive =pagesize*pageid
+        d("pageid before","$pageid")
+        d("total retrive before" , "$totalretrive")
+
+
+
+        if(totalrecords != totalretrive){
+            Handler().postDelayed(Runnable {
+                kotlin.run {
+                    pageid++
+                    d("pageid after", "$pageid")
+                    retrofitcalling(pageid)
+                }
+            }, 5000)
+
+        }
+        if(totalretrive >= totalrecords){
+            d("load data "," donot load any data ")
+        }
+
+
     }
 
 
-    private fun retrofitcalling() {
-
+    private fun retrofitcalling(pageId: Int) {
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://128.199.183.164:8081/")
@@ -142,23 +171,31 @@ class TypeFragment : Fragment() {
         val api = retrofit.create(Football::class.java)
 
 
-        pageid++
 
-        api.getdata(pagesize, pageid).enqueue(object : Callback<FootballList> {
-            override fun onFailure(call: Call<FootballList>, t: Throwable) {
-                d("Abir", "Failed to retrive")
-            }
 
-            override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
-                progressbar.visibility = View.GONE
-                i++
-                d("Abir", "responsed" + i.toString())
 
-                adapter.addFootballData(response.body()!!.data)
-                adapter.notifyDataSetChanged()
-            }
 
-        })
+
+            api.getdata(pagesize, pageId).enqueue(object : Callback<FootballList> {
+                override fun onFailure(call: Call<FootballList>, t: Throwable) {
+                    d("Abir", "Failed to retrive")
+//                    d("before fail pageid is ", " pageID : $pageId" )
+                    pageid--
+//                    d("after fail pageid is ",pageid.toString())
+                }
+
+                override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
+
+                    i++
+                    d("Abir", "responsed" + i.toString())
+
+                    adapter.addFootballData(response.body()!!.data)
+                    adapter.notifyDataSetChanged()
+                }
+
+            })
+
+
     }
 
 
