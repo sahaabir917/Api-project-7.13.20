@@ -38,12 +38,13 @@ class TypeFragment : Fragment() {
     var totalItem: Int = 0
     var scrolloutItems: Int = 0
     var pageid = 1
-    val pagesize = 10
+    val pagesize = 50
     lateinit var adapter: FootballAdapter
     lateinit var footballList: FootballList
     var i: Int = 0
     var totalRecords: Int = 0
-    var totalretrive: Int = 0
+    var totalpages: Int = 0
+    var totalretrive: Int = pagesize
 
 
     override fun onCreateView(
@@ -52,7 +53,6 @@ class TypeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_type, container, false)
-
     }
 
 
@@ -71,14 +71,12 @@ class TypeFragment : Fragment() {
                 d("Abir", "Failed to retrive")
             }
 
-
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
                 d("Abir", "responsed")
                 showAllData(response.body()!!)
-                totalRecords = response.body()!!.page.totalRecords
+                totalpages = response.body()!!.page.totalPages
             }
         })
-
 
         layoutManager = LinearLayoutManager(activity)
         recyclerview.layoutManager = layoutManager
@@ -91,10 +89,8 @@ class TypeFragment : Fragment() {
                 scrolloutItems =
                     (recyclerview.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-
                 if (isScrolling && ((currentItem + scrolloutItems) == totalItem)) {
                     isScrolling = false
-                    d("total record is in section 1 ", totalRecords.toString())
                     fetchagain(totalRecords)
                 }
             }
@@ -108,38 +104,24 @@ class TypeFragment : Fragment() {
         })
     }
 
-
     private fun showAllData(footballList: FootballList) {
         adapter = FootballAdapter(footballList)
         recyclerview.adapter = adapter
     }
 
-
     private fun fetchagain(totalrecords: Int) {
+        Handler().postDelayed(Runnable {
+            kotlin.run {
+                pageid++
 
-        totalretrive = pagesize * pageid
-        d("pageid before", "$pageid")
-        d("total retrive before", "$totalretrive")
-
-        if (totalrecords != totalretrive) {
-            Handler().postDelayed(Runnable {
-                kotlin.run {
-                    pageid++
-                    d("pageid after", "$pageid")
+               if (totalpages >= pageid) {
                     retrofitcalling(pageid)
+                } else {
+                    Toast.makeText(context, "No more News", Toast.LENGTH_SHORT).show()
                 }
-            }, 5000)
-
-        }
-        if (totalretrive >= totalrecords) {
-//            d("load data ", " donot load any data ")
-        Toast.makeText(context,"no more news",Toast.LENGTH_SHORT).show()
-
-        }
-
-
+            }
+        }, 5000)
     }
-
 
     private fun retrofitcalling(pageId: Int) {
 
@@ -150,18 +132,11 @@ class TypeFragment : Fragment() {
 
         val api = retrofit.create(Football::class.java)
 
-
-
-
-
-
-
         api.getdata(pagesize, pageId).enqueue(object : Callback<FootballList> {
             override fun onFailure(call: Call<FootballList>, t: Throwable) {
                 d("Abir", "Failed to retrive")
-//                    d("before fail pageid is ", " pageID : $pageId" )
                 pageid--
-//                    d("after fail pageid is ",pageid.toString())
+                d("after fail to retrive data ", "pageid = $pageid")
             }
 
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
@@ -172,8 +147,6 @@ class TypeFragment : Fragment() {
             }
         })
     }
-
-
 }
 
 

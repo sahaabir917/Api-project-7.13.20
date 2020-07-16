@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.footballrow.view.*
 
 class FootballAdapter(private val footballList: FootballList) : RecyclerView.Adapter<FootballAdapter.ViewHolder>() {
     lateinit var footballdata : MutableList<FootballData>
-//    public var totaldata : Int
+
     init {
       footballdata = footballList.data.toMutableList()
-//        totaldata = footballList.page.totalRecords
+
     }
 
 
@@ -27,9 +27,6 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
         val id_number : TextView = itemView.id_number
         val published_at : TextView = itemView.published_at
         val body : TextView = itemView.bodies
-
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
