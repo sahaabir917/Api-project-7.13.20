@@ -18,10 +18,7 @@
         android:id="@+id/recyclerview"
         />
 
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:id="@+id/progressbar"/>
+
 
     </LinearLayout>
 

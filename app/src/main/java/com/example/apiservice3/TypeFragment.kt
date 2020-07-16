@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apiservice3.ApiserviceInterface.Football
@@ -41,8 +42,8 @@ class TypeFragment : Fragment() {
     lateinit var adapter: FootballAdapter
     lateinit var footballList: FootballList
     var i: Int = 0
-    var totalRecords : Int = 0
-    var totalretrive : Int = 0
+    var totalRecords: Int = 0
+    var totalretrive: Int = 0
 
 
     override fun onCreateView(
@@ -58,7 +59,6 @@ class TypeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//
         val retrofit = Retrofit.Builder()
             .baseUrl("http://128.199.183.164:8081/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -66,19 +66,17 @@ class TypeFragment : Fragment() {
 
         val api = retrofit.create(Football::class.java)
 
-
         api.getdata(pagesize, pageid).enqueue(object : Callback<FootballList> {
             override fun onFailure(call: Call<FootballList>, t: Throwable) {
                 d("Abir", "Failed to retrive")
             }
 
+
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
                 d("Abir", "responsed")
                 showAllData(response.body()!!)
                 totalRecords = response.body()!!.page.totalRecords
-
             }
-
         })
 
 
@@ -98,52 +96,32 @@ class TypeFragment : Fragment() {
                     isScrolling = false
                     d("total record is in section 1 ", totalRecords.toString())
                     fetchagain(totalRecords)
-
                 }
-
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     isScrolling = true
-
                 }
             }
-
         })
-
-
     }
 
 
     private fun showAllData(footballList: FootballList) {
-
         adapter = FootballAdapter(footballList)
         recyclerview.adapter = adapter
-
     }
 
 
-    private fun fetchagain(totalrecords : Int ) {
+    private fun fetchagain(totalrecords: Int) {
 
-        //        totalretrive = (pagesize*pageid)
-//        d("totalretrive",totalretrive.toString())
-//
-//        if(totalrecords2!=totalretrive){
-//            d("load more or not","load more")
-//        }
-//        if(totalrecords2 == totalretrive){
-//            d("load more or not","dont load $totalretrive" )
-//        }
+        totalretrive = pagesize * pageid
+        d("pageid before", "$pageid")
+        d("total retrive before", "$totalretrive")
 
-        totalretrive =pagesize*pageid
-        d("pageid before","$pageid")
-        d("total retrive before" , "$totalretrive")
-
-
-
-        if(totalrecords != totalretrive){
+        if (totalrecords != totalretrive) {
             Handler().postDelayed(Runnable {
                 kotlin.run {
                     pageid++
@@ -153,8 +131,10 @@ class TypeFragment : Fragment() {
             }, 5000)
 
         }
-        if(totalretrive >= totalrecords){
-            d("load data "," donot load any data ")
+        if (totalretrive >= totalrecords) {
+//            d("load data ", " donot load any data ")
+        Toast.makeText(context,"no more news",Toast.LENGTH_SHORT).show()
+
         }
 
 
@@ -176,26 +156,21 @@ class TypeFragment : Fragment() {
 
 
 
-            api.getdata(pagesize, pageId).enqueue(object : Callback<FootballList> {
-                override fun onFailure(call: Call<FootballList>, t: Throwable) {
-                    d("Abir", "Failed to retrive")
+        api.getdata(pagesize, pageId).enqueue(object : Callback<FootballList> {
+            override fun onFailure(call: Call<FootballList>, t: Throwable) {
+                d("Abir", "Failed to retrive")
 //                    d("before fail pageid is ", " pageID : $pageId" )
-                    pageid--
+                pageid--
 //                    d("after fail pageid is ",pageid.toString())
-                }
+            }
 
-                override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
-
-                    i++
-                    d("Abir", "responsed" + i.toString())
-
-                    adapter.addFootballData(response.body()!!.data)
-                    adapter.notifyDataSetChanged()
-                }
-
-            })
-
-
+            override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
+                i++
+                d("Abir", "responsed" + i.toString())
+                adapter.addFootballData(response.body()!!.data)
+                adapter.notifyDataSetChanged()
+            }
+        })
     }
 
 

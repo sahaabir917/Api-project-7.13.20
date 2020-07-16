@@ -40,4 +40,7 @@ class FootballDetailsFragment : Fragment() {
         Log.d("data is passed", index)
 
     }
+
+
+
 }

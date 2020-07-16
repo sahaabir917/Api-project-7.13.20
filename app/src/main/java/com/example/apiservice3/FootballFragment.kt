@@ -75,7 +75,7 @@ class FootballFragment : Fragment() {
 
 
     private fun getfriend(){
-        progressbar.visibility = View.VISIBLE
+
                 val retrofit = Retrofit.Builder()
             .baseUrl("http://128.199.183.164:8081/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -91,12 +91,12 @@ class FootballFragment : Fragment() {
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
 
                 if(response!!.code()==200){
-                    progressbar.visibility = View.GONE
+
                     loading = true
                     showAllData(response.body()!!)
                 }else
                 {
-                    progressbar.visibility = View.GONE
+
                 }
 
             }
