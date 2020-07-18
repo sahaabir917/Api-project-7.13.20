@@ -79,15 +79,17 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
     override fun getItemCount() = footballdata.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
             if(getItemViewType(position)==contentview){
                 (holder as ContentViewHolder).bind(footballdata[position])
                 holder.itemView.setOnClickListener {view : View ->
                     val mArgs = Bundle()
-                  Log.d("argument will passed", footballdata[position].source)
-              mArgs.putString("Key", footballdata[position].source.toString())
-              view.findNavController().navigate(R.id.action_typeFragment_to_footballDetailsFragment,mArgs)
+                    Log.d("argument will passed", footballdata[position].source)
+                    mArgs.putString("Key", footballdata[position].source.toString())
+                    view.findNavController().navigate(R.id.action_typeFragment_to_footballDetailsFragment,mArgs)
 
           }
+
             }
 
         if(getItemViewType(position)==Adviews){

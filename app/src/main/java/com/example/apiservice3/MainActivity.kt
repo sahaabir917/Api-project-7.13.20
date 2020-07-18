@@ -17,9 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//         MobileAds.initialize(this,getString(R.string.app_id))
-//        val addrequest = AdRequest.Builder().build()
-//        adView.loadAd(addrequest)
+
 
         val adLoader = AdLoader.Builder(this, "ca-app-pub-7458814027439195~5785574998")
             .forUnifiedNativeAd { ad : UnifiedNativeAd ->
@@ -27,17 +25,13 @@ class MainActivity : AppCompatActivity() {
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(errorCode: Int) {
-                    // Handle the failure by logging, altering the UI, and so on.
+
                 }
             })
             .withNativeAdOptions(
                 NativeAdOptions.Builder()
-                // Methods in the NativeAdOptions.Builder class can be
-                // used here to specify individual options settings.
+
                 .build())
             .build()
-
-
-
     }
 }
