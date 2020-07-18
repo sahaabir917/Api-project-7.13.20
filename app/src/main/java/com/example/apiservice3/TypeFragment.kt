@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
+import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apiservice3.ApiserviceInterface.Football
@@ -45,6 +46,11 @@ class TypeFragment : Fragment() {
     var totalRecords: Int = 0
     var totalpages: Int = 0
     var totalretrive: Int = pagesize
+    var recyclersize : Int = 0
+    public var Item_per_ad : Int = 6
+
+
+
 
 
     override fun onCreateView(
@@ -81,6 +87,7 @@ class TypeFragment : Fragment() {
         layoutManager = LinearLayoutManager(activity)
         recyclerview.layoutManager = layoutManager
 
+
         recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -107,6 +114,7 @@ class TypeFragment : Fragment() {
     private fun showAllData(footballList: FootballList) {
         adapter = FootballAdapter(footballList)
         recyclerview.adapter = adapter
+        recyclerview.setHasFixedSize(true)
     }
 
     private fun fetchagain(totalrecords: Int) {
@@ -147,6 +155,9 @@ class TypeFragment : Fragment() {
             }
         })
     }
+
+
+
 }
 
 

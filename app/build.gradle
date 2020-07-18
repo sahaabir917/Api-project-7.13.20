@@ -5,7 +5,13 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.example.apiservice3"
         minSdkVersion 22
@@ -49,4 +55,6 @@ dependencies {
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:19.2.0'
     implementation "android.arch.paging:runtime:1.0.0"
+    implementation project(':nativetemplates')
+
 }

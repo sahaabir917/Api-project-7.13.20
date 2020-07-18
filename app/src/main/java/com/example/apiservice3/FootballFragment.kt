@@ -36,6 +36,7 @@ class FootballFragment : Fragment() {
     lateinit var layoutManager: RecyclerView.LayoutManager
    lateinit var adapter : FootballAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
