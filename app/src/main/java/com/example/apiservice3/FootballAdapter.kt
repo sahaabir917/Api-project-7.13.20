@@ -24,33 +24,31 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bannerad.view.*
 import kotlinx.android.synthetic.main.footballrow.view.*
 
-class FootballAdapter(private val footballList: FootballList) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FootballAdapter(private val footballList: FootballList) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     lateinit var context: Context
-    lateinit var footballdata : MutableList<FootballData>
-    val contentview : Int = 0
-    val Adviews : Int = 1
+    lateinit var footballdata: MutableList<FootballData>
+    val contentview: Int = 0
+    val Adviews: Int = 1
 
     init {
-      footballdata = footballList.data.toMutableList()
+        footballdata = footballList.data.toMutableList()
     }
 
 
-
-
-
-    class ContentViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        fun bind(footballData: FootballData){
+    class ContentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(footballData: FootballData) {
             itemView.id_number.text = footballData.id.toString()
-            itemView.bodies.text  = footballData.body
+            itemView.bodies.text = footballData.body
             itemView.published_at.text = footballData.publishedAt
         }
 
     }
 
-    class AdviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-            fun bind(){
+    class AdviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind() {
 //                what should be the context
-            }
+        }
     }
 
 
@@ -59,18 +57,18 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
         return if (position % 14 == 0) {
             Adviews
         } else {
-             contentview
+            contentview
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        if(viewType == contentview){
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.footballrow,parent,false)
+        if (viewType == contentview) {
+            val view =
+                LayoutInflater.from(parent.context).inflate(R.layout.footballrow, parent, false)
             return ContentViewHolder(view)
-        }
-        else{
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.bannerad,parent,false)
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.bannerad, parent, false)
             return AdviewHolder(view)
         }
 
@@ -80,27 +78,25 @@ class FootballAdapter(private val footballList: FootballList) : RecyclerView.Ada
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-            if(getItemViewType(position)==contentview){
-                (holder as ContentViewHolder).bind(footballdata[position])
-                holder.itemView.setOnClickListener {view : View ->
-                    val mArgs = Bundle()
-                    Log.d("argument will passed", footballdata[position].source)
-                    mArgs.putString("Key", footballdata[position].source.toString())
-                    view.findNavController().navigate(R.id.action_typeFragment_to_footballDetailsFragment,mArgs)
-
-          }
-
+        if (getItemViewType(position) == contentview) {
+            (holder as ContentViewHolder).bind(footballdata[position])
+            holder.itemView.setOnClickListener { view: View ->
+                val mArgs = Bundle()
+                Log.d("argument will passed", footballdata[position].source)
+                mArgs.putString("Key", footballdata[position].source.toString())
+                view.findNavController()
+                    .navigate(R.id.action_typeFragment_to_footballDetailsFragment, mArgs)
             }
+        }
 
-        if(getItemViewType(position)==Adviews){
+        if (getItemViewType(position) == Adviews) {
             (holder as AdviewHolder).bind()
         }
 
     }
 
 
-
-    public fun addFootballData( footballDataList : List<FootballData>){
+    public fun addFootballData(footballDataList: List<FootballData>) {
         this.footballdata.addAll(footballDataList)
     }
 
