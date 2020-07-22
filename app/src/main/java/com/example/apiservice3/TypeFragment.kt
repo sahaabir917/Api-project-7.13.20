@@ -98,13 +98,14 @@ class TypeFragment : Fragment() {
 
 
 
-    public fun loaddata() : Int {
-        val retrofit = Retrofit.Builder()
+    public fun loaddata() : Int{
+         val retrofit = Retrofit.Builder()
             .baseUrl("http://128.199.183.164:8081/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val api = retrofit.create(Football::class.java)
+
+         val api = retrofit.create(Football::class.java)
 
         api.getdata(pagesize, pageid).enqueue(object : Callback<FootballList> {
             override fun onFailure(call: Call<FootballList>, t: Throwable) {
@@ -115,15 +116,12 @@ class TypeFragment : Fragment() {
             override fun onResponse(call: Call<FootballList>, response: Response<FootballList>) {
                 d("Abir", "responsed")
                 showAllData(response.body()!!)
-                 response_code = response.code()
+                response_code = response.code()
                 totalpages = response.body()!!.page.totalPages
             }
         })
 
-        // want here the return statement
-        return response_code
-
-
+        return  response_code
     }
 
 

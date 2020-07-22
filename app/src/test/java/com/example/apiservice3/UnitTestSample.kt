@@ -18,14 +18,17 @@ private const val FAKE_STRING = "HELLO_WORLD"
 class UnitTestSample {
 
     lateinit var  unittest : EmailValidator
-
+    lateinit var typeFragment : TypeFragment
     init {
        unittest = EmailValidator()
+        typeFragment = TypeFragment()
     }
 
     @Test
     fun readStringFromContext_LocalizedString() {
         assertFalse(unittest.isValidEmail("sahaabir917.com"))
     }
+
+
 
 }
